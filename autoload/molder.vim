@@ -35,7 +35,11 @@ function! molder#init() abort
   let b:dir = l:dir
   setlocal filetype=molder buftype=nofile bufhidden=wipe nobuflisted noswapfile
   setlocal nowrap cursorline
-  silent keepmarks keepjumps call setline(1, sort(map(readdirex(l:path, '1', {'sort': 'none'}), {_, v -> v['name'] .. (v['type'] ==# 'dir' ? '/' : '')}), function('s:sort')))
+  let l:files = map(readdirex(l:path, '1', {'sort': 'none'}), {_, v -> v['name'] .. (v['type'] ==# 'dir' ? '/' : '')})
+  if !get(g:, 'molder_show_hidden', 0)
+    call filter(l:files, 'v:val =~# "^[^.]"')
+  endif
+  silent keepmarks keepjumps call setline(1, sort(l:files, function('s:sort')))
 endfunction
 
 function! molder#open() abort
