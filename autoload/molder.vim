@@ -1,9 +1,3 @@
-function! s:shutup_netrw() abort
-  augroup FileExplorer
-    autocmd!
-  augroup END
-endfunction
-
 function! s:sort(lhs, rhs) abort
   if a:lhs[-1:] ==# '/' && a:rhs[-1:] !=# '/'
     return -1
@@ -19,7 +13,6 @@ function! s:sort(lhs, rhs) abort
 endfunction
 
 function! molder#init() abort
-  call s:shutup_netrw()
   let l:path = expand('%:p')
   if !isdirectory(l:path)
     return
