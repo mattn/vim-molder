@@ -13,7 +13,7 @@ function! s:sort(lhs, rhs) abort
   if a:lhs < a:rhs
     return -1
   elseif a:lhs > a:rhs
-    return -1
+    return 1
   endif
   return 0
 endfunction
