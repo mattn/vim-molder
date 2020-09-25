@@ -43,3 +43,7 @@ function! molder#up() abort
   let l:dir = fnamemodify(b:dir, ':p:h:h:gs!\!/!')
   exe 'edit' l:dir
 endfunction
+
+function! molder#reload() abort
+  edit
+endfunction
