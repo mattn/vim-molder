@@ -26,6 +26,7 @@ function! molder#init() abort
     exe 'noautocmd' 'silent' 'noswapfile' 'file' l:dir
   endif
   let b:dir = l:dir
+  setlocal modifiable
   setlocal filetype=molder buftype=nofile bufhidden=wipe nobuflisted noswapfile
   setlocal nowrap cursorline
   let l:files = map(readdirex(l:path, '1', {'sort': 'none'}), {_, v -> v['name'] .. (v['type'] ==# 'dir' ? '/' : '')})
@@ -33,6 +34,7 @@ function! molder#init() abort
     call filter(l:files, 'v:val =~# "^[^.]"')
   endif
   silent keepmarks keepjumps call setline(1, sort(l:files, function('s:sort')))
+  setlocal nomodified nomodifiable
 endfunction
 
 function! molder#open() abort
