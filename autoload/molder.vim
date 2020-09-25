@@ -52,6 +52,6 @@ endfunction
 
 function! molder#shell() abort
   let l:path = b:dir .. getline('.')
-  call feedkeys(':! ' .. l:path .. "\<c-home>\<right>", 'n')
+  call feedkeys(':! ' .. shellescape(l:path) .. "\<c-home>\<right>", 'n')
 endfunction
 
