@@ -43,7 +43,6 @@ function! molder#init() abort
 endfunction
 
 function! molder#open() abort
-    echomsg b:dir .. getline('.')
   exe 'edit' b:dir .. getline('.')
 endfunction
 
