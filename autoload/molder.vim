@@ -49,3 +49,9 @@ endfunction
 function! molder#reload() abort
   edit
 endfunction
+
+function! molder#shell() abort
+  let l:path = b:dir .. getline('.')
+  call feedkeys(':! ' .. l:path .. "\<c-home>\<right>", 'n')
+endfunction
+
