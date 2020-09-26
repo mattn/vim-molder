@@ -35,6 +35,9 @@ function! molder#init() abort
   endif
   silent keepmarks keepjumps call setline(1, sort(l:files, function('s:sort')))
   setlocal nomodified nomodifiable
+  for l:fn in filter(split(execute('function'), "\n"), 'v:val =~# "^function molder#extension#\\w\\+#init().*"')
+    call call(split(l:fn, ' ')[1][:-3], [])
+  endfor
 endfunction
 
 function! molder#open() abort
@@ -55,3 +58,13 @@ function! molder#shell() abort
   call feedkeys(':! ' .. shellescape(l:path) .. "\<c-home>\<right>", 'n')
 endfunction
 
+function! molder#curdir() abort
+  return get(b:, 'dir', '')
+endfunction
+
+function! molder#error(msg) abort
+  redraw
+  echohl Error
+  echomsg a:msg
+  echohl None
+endfunction
