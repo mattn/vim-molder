@@ -7,7 +7,7 @@ if !hasmapto('<plug>(molder-open)')
   nmap <buffer> <cr> <plug>(molder-open)
 endif
 if !hasmapto('<plug>(molder-up)')
-  nmap <buffer> <c-u> <plug>(molder-up)
+  nmap <buffer> - <plug>(molder-up)
 endif
 if !hasmapto('<plug>(molder-reload)')
   nmap <buffer> <c-r> <plug>(molder-reload)
