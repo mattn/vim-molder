@@ -12,8 +12,18 @@ function! s:sort(lhs, rhs) abort
   return 0
 endfunction
 
+function! s:name(base, v) abort
+  let l:type = a:v['type']
+  if l:type ==# 'link' || l:type ==# 'junction'
+    if isdirectory(resolve(a:base .. a:v['name']))
+      let l:type = 'dir'
+    endif
+  endif
+  return a:v['name'] .. (l:type ==# 'dir' ? '/' : '')
+endfunction
+
 function! molder#init() abort
-  let l:path = expand('%:p')
+  let l:path = resolve(expand('%:p'))
   if !isdirectory(l:path)
     return
   endif
@@ -22,14 +32,14 @@ function! molder#init() abort
     let l:dir .= '/'
   endif
 
-  if tr(bufname('%'), '\', '/') !=# dir
+  if tr(bufname('%'), '\', '/') !=# l:dir
     exe 'noautocmd' 'silent' 'noswapfile' 'file' l:dir
   endif
   let b:dir = l:dir
   setlocal modifiable
   setlocal filetype=molder buftype=nofile bufhidden=wipe nobuflisted noswapfile
   setlocal nowrap cursorline
-  let l:files = map(readdirex(l:path, '1', {'sort': 'none'}), {_, v -> v['name'] .. (v['type'] ==# 'dir' ? '/' : '')})
+  let l:files = map(readdirex(l:path, '1', {'sort': 'none'}), {_, v -> s:name(l:dir, v)})
   if !get(g:, 'molder_show_hidden', 0)
     call filter(l:files, 'v:val =~# "^[^.]"')
   endif
