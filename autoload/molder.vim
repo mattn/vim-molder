@@ -49,6 +49,10 @@ function! molder#up() abort
   exe 'edit' l:dir
 endfunction
 
+function! molder#home() abort
+  edit ~/
+endfunction
+
 function! molder#reload() abort
   edit
 endfunction
