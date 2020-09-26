@@ -62,6 +62,10 @@ function! molder#curdir() abort
   return get(b:, 'dir', '')
 endfunction
 
+function! molder#current() abort
+  return getline('.')
+endfunction
+
 function! molder#error(msg) abort
   redraw
   echohl Error
