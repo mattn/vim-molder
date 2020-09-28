@@ -2,6 +2,10 @@
 
 Minimal File Explorer
 
+![](https://raw.githubusercontent.com/mattn/vim-molder/master/misc/screenshot1.gif)
+
+![](https://raw.githubusercontent.com/mattn/vim-molder/master/misc/screenshot2.gif)
+
 ## Usage
 
 ```
