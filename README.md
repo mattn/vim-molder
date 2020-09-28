@@ -20,6 +20,10 @@ For [vim-plug](https://github.com/junegunn/vim-plug) plugin manager:
 Plug 'mattn/vim-molder'
 ```
 
+## Extensions
+
+vim-molder does not have features to operate file or directories. You need to add [vim-molder-operations](https://github.com/mattn/vim-molder-operations) if you want to do it.
+
 ## Options
 
 * Show dotfiles and dotdirs:
