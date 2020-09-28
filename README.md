@@ -16,13 +16,18 @@ $ vim /path/to/directory/
 
 For [vim-plug](https://github.com/junegunn/vim-plug) plugin manager:
 
-```
+```vim
 Plug 'mattn/vim-molder'
 ```
 
 ## Extensions
 
 vim-molder does not have features to operate file or directories. You need to add [vim-molder-operations](https://github.com/mattn/vim-molder-operations) if you want to do it.
+
+```vim
+Plug 'mattn/vim-molder'
+Plug 'mattn/vim-molder-operations'
+```
 
 ## Options
 
