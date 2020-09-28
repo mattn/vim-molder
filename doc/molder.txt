@@ -1,0 +1,50 @@
+*molder.txt* molder: Minimal File Explorer
+
+==============================================================================
+DESCRIPTION                                                 *molder-description*
+
+The molder is minimal file explorer the features that most of explorer plugins
+implement. This plugin does not have:
+
+* Copy/delete/rename files or directories.
+* Create directory.
+* Execute executable file.
+
+==============================================================================
+INSTALLATION                                               *molder-installation*
+
+Manual installation:
+  Copy the files to your .vim directory (_vimfiles on Windows).
+
+Pathogen: >
+ cd ~/.vim/bundle && git clone git://github.com/mattn/vim-molder.git
+
+Vundle: add below to .vimrc
+>
+ Plugin 'mattn/vim-molder'
+<
+ Run :PluginInstall
+
+NeoBundle: add below to .vimrc
+>
+ NeoBundle 'mattn/vim-molder'
+<
+ Run :NeoBundleInstall
+
+vim-plug: add below to .vimrc
+>
+ Plug 'mattn/vim-molder' to .vimrc
+<
+ Run :PlugInstall
+
+==============================================================================
+KEYMAPPINGS                                                 *molder-keymappings*
+
+* "-": Go up parent directory. <plug>(molder-up)
+* "~": go to home directory. <plug>(molder-home)
+* "r" on directory: go to the directory. <plug>(molder-reload)
+* "<cr>" on file: open the file on existing Vim. <plug>(molder-open)
+* "<cr>" on directory: go to the directory. <plug>(molder-open)
+
+==============================================================================
+vim:tw=78:ts=8:ft=help:norl:noet:fen:fdl=0:
