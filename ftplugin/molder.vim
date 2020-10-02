@@ -10,7 +10,7 @@ if !hasmapto('<plug>(molder-up)')
   nmap <buffer> - <plug>(molder-up)
 endif
 if !hasmapto('<plug>(molder-reload)')
-  nmap <buffer> <leader>-r <plug>(molder-reload)
+  nmap <buffer> \\ <plug>(molder-reload)
 endif
 if !hasmapto('<plug>(molder-home)')
   nmap <buffer> ~ <plug>(molder-home)
