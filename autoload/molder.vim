@@ -35,7 +35,7 @@ function! molder#init() abort
   if tr(bufname('%'), '\', '/') !=# l:dir
     exe 'noautocmd' 'silent' 'noswapfile' 'file' l:dir
   endif
-  let b:dir = l:dir
+  let b:molder_dir = l:dir
   setlocal modifiable
   setlocal filetype=molder buftype=nofile bufhidden=wipe nobuflisted noswapfile
   setlocal nowrap cursorline
@@ -51,11 +51,11 @@ function! molder#init() abort
 endfunction
 
 function! molder#open() abort
-  exe 'edit' b:dir .. substitute(getline('.'), '/$', '', '')
+  exe 'edit' b:molder_dir .. substitute(getline('.'), '/$', '', '')
 endfunction
 
 function! molder#up() abort
-  let l:dir = substitute(b:dir, '/$', '', '')
+  let l:dir = substitute(b:molder_dir, '/$', '', '')
   let l:name = fnamemodify(l:dir, ':t:gs!\!/!')
   let l:dir = fnamemodify(l:dir, ':p:h:h:gs!\!/!')
   exe 'edit' l:dir
@@ -71,7 +71,7 @@ function! molder#reload() abort
 endfunction
 
 function! molder#curdir() abort
-  return get(b:, 'dir', '')
+  return get(b:, 'molder_dir', '')
 endfunction
 
 function! molder#current() abort
