@@ -45,6 +45,11 @@ function! molder#init() abort
   for l:fn in filter(split(execute('function'), "\n"), 'v:val =~# "^function molder#extension#\\w\\+#init().*"')
     call call(split(l:fn, ' ')[1][:-3], [])
   endfor
+  let l:alt = fnamemodify(expand('#'), ':p:h:gs!\!/!')
+  if substitute(l:dir, '/$', '', '') ==# l:alt
+    let l:alt = fnamemodify(expand('#'), ':t')
+    call search('\v^' .. alt, 'c')
+  endif
 endfunction
 
 function! molder#open() abort
