@@ -32,9 +32,6 @@ function! molder#init() abort
     let l:dir .= '/'
   endif
 
-  if tr(bufname('%'), '\', '/') !=# l:dir
-    exe 'noautocmd' 'silent' 'noswapfile' 'file' l:dir
-  endif
   let b:molder_dir = l:dir
   setlocal modifiable
   setlocal filetype=molder buftype=nofile bufhidden=wipe nobuflisted noswapfile
