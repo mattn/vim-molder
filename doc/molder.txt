@@ -42,7 +42,7 @@ KEYMAPPINGS                                                 *molder-keymappings*
 
 * "-": Go up parent directory. <plug>(molder-up)
 * "~": go to home directory. <plug>(molder-home)
-* "r" on directory: go to the directory. <plug>(molder-reload)
+* "<leader>r" on directory: go to the directory. <plug>(molder-reload)
 * "<cr>" on file: open the file on existing Vim. <plug>(molder-open)
 * "<cr>" on directory: go to the directory. <plug>(molder-open)
 
