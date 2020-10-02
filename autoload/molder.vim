@@ -63,7 +63,7 @@ function! molder#up() abort
 endfunction
 
 function! molder#home() abort
-  edit ~/
+  exe 'edit' substitute(fnamemodify(expand('~'), ':p:gs!\!/!'), '/$', '', '')
 endfunction
 
 function! molder#reload() abort
