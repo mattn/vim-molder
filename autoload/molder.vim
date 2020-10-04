@@ -37,7 +37,7 @@ function! molder#init() abort
   setlocal filetype=molder buftype=nofile bufhidden=wipe nobuflisted noswapfile
   setlocal nowrap cursorline
   let l:files = map(readdirex(l:path, '1', {'sort': 'none'}), {_, v -> s:name(l:dir, v)})
-  if !get(g:, 'molder_show_hidden', 0)
+  if !get(b:, 'molder_show_hidden', get(g:, 'molder_show_hidden', 0))
     call filter(l:files, 'v:val =~# "^[^.]"')
   endif
   silent keepmarks keepjumps call setline(1, sort(l:files, function('s:sort')))
@@ -78,6 +78,11 @@ endfunction
 
 function! molder#current() abort
   return getline('.')
+endfunction
+
+function! molder#toggle_hidden() abort
+  let b:molder_show_hidden = !get(b:, 'molder_show_hidden', get(g:, 'molder_show_hidden', 0))
+  call molder#reload()
 endfunction
 
 function! molder#error(msg) abort

@@ -42,6 +42,7 @@ KEYMAPPINGS                                                 *molder-keymappings*
 
 * "-": Go up parent directory. <plug>(molder-up)
 * "~": Go to home directory. <plug>(molder-home)
+* "+": Toggle show hidden files. <plug>(molder-toggle-hidden)
 * "\\": Reload. <plug>(molder-reload)
 * "<cr>" on file: Open the file on existing Vim. <plug>(molder-open)
 * "<cr>" on directory: Go to the directory. <plug>(molder-open)
