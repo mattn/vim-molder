@@ -59,6 +59,9 @@ endfunction
 function! molder#up() abort
   let l:dir = substitute(b:molder_dir, '/$', '', '')
   let l:name = fnamemodify(l:dir, ':t:gs!\!/!')
+  if empty(l:name)
+    return
+  endif
   let l:dir = fnamemodify(l:dir, ':p:h:h:gs!\!/!')
   exe 'edit' l:dir
   call search('\v^' .. l:name, 'c')
