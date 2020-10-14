@@ -13,4 +13,4 @@ augroup _molder_
   autocmd BufEnter * call molder#init()
 augroup END
 
-runtime autoload/molder/extension/*.vim
+runtime! autoload/molder/extension/*.vim
