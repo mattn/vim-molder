@@ -18,6 +18,8 @@ function! s:name(base, v) abort
     if isdirectory(resolve(a:base .. a:v['name']))
       let l:type = 'dir'
     endif
+  elseif l:type ==# 'linkd'
+    let l:type = 'dir'
   endif
   return a:v['name'] .. (l:type ==# 'dir' ? '/' : '')
 endfunction
