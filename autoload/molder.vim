@@ -55,7 +55,7 @@ function! molder#init() abort
 endfunction
 
 function! molder#open() abort
-  exe 'edit' b:molder_dir .. substitute(getline('.'), '/$', '', '')
+  exe 'edit' fnameescape(b:molder_dir .. substitute(getline('.'), '/$', '', ''))
 endfunction
 
 function! molder#up() abort
@@ -65,12 +65,12 @@ function! molder#up() abort
     return
   endif
   let l:dir = fnamemodify(l:dir, ':p:h:h:gs!\!/!')
-  exe 'edit' l:dir
+  exe 'edit' fnameescape(l:dir)
   call search('\v^' .. l:name, 'c')
 endfunction
 
 function! molder#home() abort
-  exe 'edit' substitute(fnamemodify(expand('~'), ':p:gs!\!/!'), '/$', '', '')
+  exe 'edit' fnameescape(substitute(fnamemodify(expand('~'), ':p:gs!\!/!'), '/$', '', ''))
 endfunction
 
 function! molder#reload() abort
