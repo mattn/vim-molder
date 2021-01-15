@@ -50,7 +50,7 @@ function! molder#init() abort
   let l:alt = fnamemodify(expand('#'), ':p:h:gs!\!/!')
   if substitute(l:dir, '/$', '', '') ==# l:alt
     let l:alt = fnamemodify(expand('#'), ':t')
-    call search('\v^' .. alt, 'c')
+    call search('\v^\V' .. escape(l:alt, '\') .. '\v$', 'c')
   endif
 endfunction
 
@@ -66,7 +66,7 @@ function! molder#up() abort
   endif
   let l:dir = fnamemodify(l:dir, ':p:h:h:gs!\!/!')
   exe 'edit' fnameescape(l:dir)
-  call search('\v^' .. l:name, 'c')
+  call search('\v^\V' .. escape(l:name, '\') .. '/\v$', 'c')
 endfunction
 
 function! molder#home() abort
