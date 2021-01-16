@@ -36,7 +36,7 @@ function! molder#init() abort
 
   let b:molder_dir = l:dir
   setlocal modifiable
-  setlocal filetype=molder buftype=nofile bufhidden=wipe nobuflisted noswapfile
+  setlocal filetype=molder buftype=nofile bufhidden=unload nobuflisted noswapfile
   setlocal nowrap cursorline
   let l:files = map(readdirex(l:path, '1', {'sort': 'none'}), {_, v -> s:name(l:dir, v)})
   if !get(b:, 'molder_show_hidden', get(g:, 'molder_show_hidden', 0))
