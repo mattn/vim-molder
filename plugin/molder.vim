@@ -1,3 +1,8 @@
+if exists('g:loaded_molder')
+  finish
+endif
+let g:loaded_molder = 1
+
 function! s:shutup_netrw() abort
   if exists('#FileExplorer')
     autocmd! FileExplorer *
