@@ -1,3 +1,5 @@
+let g:molder_keepalt = get(g:, 'molder_keepalt', 0)
+
 function! s:sort(lhs, rhs) abort
   if a:lhs[-1:] ==# '/' && a:rhs[-1:] !=# '/'
     return -1
@@ -55,7 +57,7 @@ function! molder#init() abort
 endfunction
 
 function! molder#open() abort
-  exe 'edit' fnameescape(b:molder_dir .. substitute(getline('.'), '/$', '', ''))
+  exe (g:molder_keepalt ? 'keepalt' : '') 'edit' fnameescape(b:molder_dir .. substitute(getline('.'), '/$', '', ''))
 endfunction
 
 function! molder#up() abort
@@ -65,12 +67,12 @@ function! molder#up() abort
     return
   endif
   let l:dir = fnamemodify(l:dir, ':p:h:h:gs!\!/!')
-  exe 'edit' fnameescape(l:dir)
+  exe (g:molder_keepalt ? 'keepalt' : '') 'edit' fnameescape(l:dir)
   call search('\v^\V' .. escape(l:name, '\') .. '/\v$', 'c')
 endfunction
 
 function! molder#home() abort
-  exe 'edit' fnameescape(substitute(fnamemodify(expand('~'), ':p:gs!\!/!'), '/$', '', ''))
+  exe (g:molder_keepalt ? 'keepalt' : '') 'edit' fnameescape(substitute(fnamemodify(expand('~'), ':p:gs!\!/!'), '/$', '', ''))
 endfunction
 
 function! molder#reload() abort
