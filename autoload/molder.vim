@@ -38,7 +38,11 @@ function! molder#init() abort
   setlocal modifiable
   setlocal filetype=molder buftype=nofile bufhidden=unload nobuflisted noswapfile
   setlocal nowrap cursorline
-  let l:files = map(readdirex(l:path, '1', {'sort': 'none'}), {_, v -> s:name(l:dir, v)})
+  if exists('*readdirex')
+    let l:files = map(readdirex(l:path, '1', {'sort': 'none'}), {_, v -> s:name(l:dir, v)})
+  else
+    let l:files = map(readdir(l:path, '1', {'sort': 'none'}), {_, v -> s:name(l:dir, {'type': getftype(l:dir .. '/' .. v), 'name': v})})
+  endif
   if !get(b:, 'molder_show_hidden', get(g:, 'molder_show_hidden', 0))
     call filter(l:files, 'v:val =~# "^[^.]"')
   endif
