@@ -24,6 +24,14 @@ function! s:name(base, v) abort
   return a:v['name'] .. (l:type ==# 'dir' ? '/' : '')
 endfunction
 
+function! molder#chdir() abort
+  if get(b:, 'molder_dir', '') ==# ''
+    return
+  endif
+  noautocmd silent file `=getcwd()`
+  call molder#init()
+endfunction
+
 function! molder#init() abort
   let l:path = resolve(expand('%:p'))
   if !isdirectory(l:path)
@@ -35,6 +43,7 @@ function! molder#init() abort
   endif
 
   let b:molder_dir = l:dir
+  noautocmd silent file `=b:molder_dir`
   setlocal modifiable
   setlocal filetype=molder buftype=nofile bufhidden=unload nobuflisted noswapfile
   setlocal nowrap cursorline
@@ -46,6 +55,7 @@ function! molder#init() abort
   if !get(b:, 'molder_show_hidden', get(g:, 'molder_show_hidden', 0))
     call filter(l:files, 'v:val =~# "^[^.]"')
   endif
+  silent %d _
   silent keepmarks keepjumps call setline(1, sort(l:files, function('s:sort')))
   setlocal nomodified nomodifiable
   for l:fn in filter(split(execute('function'), "\n"), 'v:val =~# "^function molder#extension#\\w\\+#init().*"')

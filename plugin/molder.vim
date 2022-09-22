@@ -16,6 +16,7 @@ augroup _molder_
   autocmd!
   autocmd VimEnter * call s:shutup_netrw()
   autocmd BufEnter * call molder#init()
+  autocmd DirChanged * call molder#chdir()
 augroup END
 
 runtime! autoload/molder/extension/*.vim
