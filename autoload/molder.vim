@@ -43,7 +43,7 @@ function! molder#init() abort
   endif
 
   let b:molder_dir = l:dir
-  noautocmd silent file `=b:molder_dir`
+  noautocmd noswapfile silent file `=b:molder_dir`
   setlocal modifiable
   setlocal filetype=molder buftype=nofile bufhidden=unload nobuflisted noswapfile
   setlocal nowrap cursorline
