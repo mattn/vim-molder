@@ -55,7 +55,6 @@ function! molder#init() abort
   if !get(b:, 'molder_show_hidden', get(g:, 'molder_show_hidden', 0))
     call filter(l:files, 'v:val =~# "^[^.]"')
   endif
-  silent %d _
   silent keepmarks keepjumps call setline(1, sort(l:files, function('s:sort')))
   setlocal nomodified nomodifiable
   for l:fn in filter(split(execute('function'), "\n"), 'v:val =~# "^function molder#extension#\\w\\+#init().*"')
