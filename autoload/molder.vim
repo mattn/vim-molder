@@ -68,7 +68,11 @@ function! molder#init() abort
 endfunction
 
 function! molder#open() abort
-  exe 'edit' fnameescape(b:molder_dir .. substitute(getline('.'), '/$', '', ''))
+  let l:split = getline('.') =~# '/$' ? 'edit' : get(g:, 'molder_open_split', 'edit')
+  exe l:split fnameescape(b:molder_dir .. substitute(getline('.'), '/$', '', ''))
+endfunction
+
+function! molder#open_split() abort
 endfunction
 
 function! molder#up() abort

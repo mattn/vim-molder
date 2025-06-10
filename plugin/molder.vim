@@ -20,3 +20,9 @@ augroup _molder_
 augroup END
 
 runtime! autoload/molder/extension/*.vim
+
+nnoremap <silent> <plug>(molder-open) :<c-u>call molder#open()<cr>
+nnoremap <silent> <plug>(molder-up) :<c-u>call molder#up()<cr>
+nnoremap <silent> <plug>(molder-reload) :<c-u>call molder#reload()<cr>
+nnoremap <silent> <plug>(molder-home) :<c-u>call molder#home()<cr>
+nnoremap <silent> <plug>(molder-toggle-hidden) :<c-u>call molder#toggle_hidden()<cr>
