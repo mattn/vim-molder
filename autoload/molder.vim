@@ -12,6 +12,57 @@ function! s:sort(lhs, rhs) abort
   return 0
 endfunction
 
+function! s:natural_sort(lhs, rhs) abort
+  if a:lhs[-1:] ==# '/' && a:rhs[-1:] !=# '/'
+    return -1
+  elseif a:lhs[-1:] !=# '/' && a:rhs[-1:] ==# '/'
+    return 1
+  endif
+  return s:natural(a:lhs, a:rhs)
+endfunction
+
+function! s:natural(lhs, rhs)
+  let l:ilhs = 0
+  let l:irhs = 0
+  let l:llhs = len(a:lhs)
+  let l:lrhs = len(a:rhs)
+
+  while l:ilhs < l:llhs && l:irhs < l:lrhs
+    if a:lhs[l:ilhs] =~ '\d' && a:rhs[l:irhs] =~ '\d'
+      let l:nlhs = 0
+      let l:nrhs = 0
+      let l:zlhs = 0
+      let l:zrhs = 0
+
+      while l:ilhs < l:llhs && a:lhs[l:ilhs] =~ '\d'
+        let l:nlhs = l:nlhs * 10 + str2nr(a:lhs[l:ilhs])
+        let l:zlhs += 1
+        let l:ilhs += 1
+      endwhile
+      while l:irhs < l:lrhs && a:rhs[l:irhs] =~ '\d'
+        let l:nrhs = l:nrhs * 10 + str2nr(a:rhs[l:irhs])
+        let l:zrhs += 1
+        let l:irhs += 1
+      endwhile
+
+      if l:nlhs != l:nrhs
+        return l:nlhs > l:nrhs ? 1 : -1
+      endif
+      if l:zlhs != l:zrhs
+        return l:zlhs > l:zrhs ? 1 : -1
+      endif
+    else
+      if a:lhs[l:ilhs] != a:rhs[l:irhs]
+        return a:lhs[l:ilhs] > a:rhs[l:irhs] ? 1 : -1
+      endif
+      let l:ilhs += 1
+      let l:irhs += 1
+    endif
+  endwhile
+
+  return l:llhs == l:lrhs ? 0 : (l:llhs > l:lrhs ? 1 : -1)
+endfunction
+
 function! s:name(base, v) abort
   let l:type = a:v['type']
   if l:type ==# 'link' || l:type ==# 'junction'
@@ -55,7 +106,8 @@ function! molder#init() abort
   if !get(b:, 'molder_show_hidden', get(g:, 'molder_show_hidden', 0))
     call filter(l:files, 'v:val =~# "^[^.]"')
   endif
-  silent keepmarks keepjumps call setline(1, sort(l:files, function('s:sort')))
+  let l:funcname = get(g:, 'molder_natural_sort', 0) ? 's:natural_sort' : 's:sort'
+  silent keepmarks keepjumps call setline(1, sort(l:files, function(l:funcname)))
   setlocal nomodified nomodifiable
   for l:fn in filter(split(execute('function'), "\n"), 'v:val =~# "^function molder#extension#\\w\\+#init().*"')
     call call(split(l:fn, ' ')[1][:-3], [])
