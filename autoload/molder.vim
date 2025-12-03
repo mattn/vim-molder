@@ -107,7 +107,10 @@ function! molder#init() abort
     call filter(l:files, 'v:val =~# "^[^.]"')
   endif
   let l:funcname = get(g:, 'molder_natural_sort', 0) ? 's:natural_sort' : 's:sort'
+  let l:old_undolevels = &undolevels
+  let &undolevels = -1
   silent keepmarks keepjumps call setline(1, sort(l:files, function(l:funcname)))
+  let &undolevels = l:old_undolevels
   setlocal nomodified nomodifiable
   for l:fn in filter(split(execute('function'), "\n"), 'v:val =~# "^function molder#extension#\\w\\+#init().*"')
     call call(split(l:fn, ' ')[1][:-3], [])
