@@ -282,6 +282,11 @@ function! molder#handle_protocol(action) abort
     endif
     call s:call_handler(l:protocol, 'read', l:path)
   elseif a:action ==# 'write'
+    " Skip write for directory buffers
+    if exists('b:molder_dir')
+      call molder#error('Cannot write directory buffer')
+      return
+    endif
     call s:call_handler(l:protocol, 'write', l:path)
   endif
 endfunction
