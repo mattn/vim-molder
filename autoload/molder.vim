@@ -75,6 +75,36 @@ function! s:name(base, v) abort
   return a:v['name'] .. (l:type ==# 'dir' ? '/' : '')
 endfunction
 
+" Load handlers if not already loaded
+function! s:ensure_handlers_loaded() abort
+  if !exists('s:handlers_loaded')
+    runtime! autoload/molder/handler/*.vim
+    let s:handlers_loaded = 1
+  endif
+endfunction
+
+" Call protocol handler if it exists
+" Returns: 1 if handler was called, 0 otherwise
+function! s:call_handler(protocol, method, ...) abort
+  if empty(a:protocol)
+    return 0
+  endif
+
+  call s:ensure_handlers_loaded()
+
+  let l:handler_func = 'molder#handler#' . a:protocol . '#' . a:method
+  if exists('*' . l:handler_func)
+    let l:Handler = function(l:handler_func)
+    if a:0 > 0
+      call call(l:Handler, a:000)
+    else
+      call l:Handler()
+    endif
+    return 1
+  endif
+  return 0
+endfunction
+
 function! molder#chdir() abort
   if get(b:, 'molder_dir', '') ==# ''
     return
@@ -84,13 +114,48 @@ function! molder#chdir() abort
 endfunction
 
 function! molder#init() abort
-  let l:path = resolve(expand('%:p'))
-  if !isdirectory(l:path)
-    return
+  let l:path = expand('%:p')
+  let l:files = []
+  let l:handled = 0
+
+  " Load handler scripts only if path contains protocol
+  let l:protocol = matchstr(l:path, '^\zs\w\+\ze://')
+  if !empty(l:protocol)
+    " Skip if buffer is a file handled by protocol read handler
+    if exists('b:molder_protocol_handled')
+      return
+    endif
+
+    call s:ensure_handlers_loaded()
+
+    let l:handler_func = 'molder#handler#' . l:protocol . '#init'
+    if exists('*' . l:handler_func)
+      let l:Handler = function(l:handler_func)
+      let l:result = l:Handler(l:path)
+      if type(l:result) == v:t_dict && has_key(l:result, 'files')
+        let l:files = l:result['files']
+        let l:dir = l:result['dir']
+        let l:handled = 1
+      elseif type(l:result) == v:t_string && !empty(l:result)
+        let l:path = l:result
+      endif
+    endif
   endif
-  let l:dir = fnamemodify(l:path, ':p:gs!\!/!')
-  if isdirectory(l:dir) && l:dir !~# '/$'
-    let l:dir .= '/'
+  let l:path = resolve(l:path)
+
+  if !l:handled
+    if !isdirectory(l:path)
+      return
+    endif
+    let l:dir = fnamemodify(l:path, ':p:gs!\!/!')
+    if isdirectory(l:dir) && l:dir !~# '/$'
+      let l:dir .= '/'
+    endif
+    if exists('*readdirex')
+      let l:files = map(readdirex(l:path, '1', {'sort': 'none'}), {_, v -> s:name(l:dir, v)})
+    else
+      let l:files = map(readdir(l:path, '1'), {_, v -> s:name(l:dir, {'type': getftype(l:dir .. '/' .. v), 'name': v})})
+    endif
   endif
 
   let b:molder_dir = l:dir
@@ -98,11 +163,6 @@ function! molder#init() abort
   setlocal modifiable
   setlocal filetype=molder buftype=nofile bufhidden=unload nobuflisted noswapfile
   setlocal nowrap cursorline
-  if exists('*readdirex')
-    let l:files = map(readdirex(l:path, '1', {'sort': 'none'}), {_, v -> s:name(l:dir, v)})
-  else
-    let l:files = map(readdir(l:path, '1'), {_, v -> s:name(l:dir, {'type': getftype(l:dir .. '/' .. v), 'name': v})})
-  endif
   if !get(b:, 'molder_show_hidden', get(g:, 'molder_show_hidden', 0))
     call filter(l:files, 'v:val =~# "^[^.]"')
   endif
@@ -123,8 +183,19 @@ function! molder#init() abort
 endfunction
 
 function! molder#open() abort
-  let l:split = getline('.') =~# '/$' ? 'edit' : get(g:, 'molder_open_split', 'edit')
-  exe l:split fnameescape(b:molder_dir .. substitute(getline('.'), '/$', '', ''))
+  let l:filename = substitute(getline('.'), '/$', '', '')
+  let l:fullpath = b:molder_dir .. l:filename
+  let l:is_dir = getline('.') =~# '/$'
+
+  " Check if handler exists for this protocol
+  let l:protocol = matchstr(b:molder_dir, '^\zs\w\+\ze://')
+  if s:call_handler(l:protocol, 'open', l:fullpath, l:is_dir)
+    return
+  endif
+
+  " Default behavior for local files
+  let l:split = l:is_dir ? 'edit' : get(g:, 'molder_open_split', 'edit')
+  exe l:split fnameescape(l:fullpath)
 endfunction
 
 function! molder#open_split() abort
@@ -136,6 +207,24 @@ function! molder#up() abort
   if empty(l:name)
     return
   endif
+
+  " Check if handler exists for this protocol
+  let l:protocol = matchstr(b:molder_dir, '^\zs\w\+\ze://')
+  if !empty(l:protocol)
+    call s:ensure_handlers_loaded()
+    let l:handler_func = 'molder#handler#' . l:protocol . '#up'
+    if exists('*' . l:handler_func)
+      let l:Handler = function(l:handler_func)
+      let l:parent = l:Handler(b:molder_dir)
+      if !empty(l:parent)
+        exe 'edit' fnameescape(l:parent)
+        call search('\v^\V' .. escape(l:name, '\') .. '/\v$', 'c')
+        return
+      endif
+    endif
+  endif
+
+  " Default behavior for local files
   let l:dir = fnamemodify(l:dir, ':p:h:h:gs!\!/!')
   exe 'edit' fnameescape(l:dir)
   call search('\v^\V' .. escape(l:name, '\') .. '/\v$', 'c')
@@ -167,4 +256,27 @@ function! molder#error(msg) abort
   echohl Error
   echomsg a:msg
   echohl None
+endfunction
+
+function! molder#handle_protocol(action) abort
+  let l:path = expand('%')
+  let l:protocol = matchstr(l:path, '^\zs\w\+\ze://')
+
+  if empty(l:protocol)
+    return
+  endif
+
+  call s:ensure_handlers_loaded()
+
+  if a:action ==# 'read'
+    " Check if path ends with / (directory)
+    if l:path =~# '/$'
+      " Let molder#init() handle directories
+      call molder#init()
+      return
+    endif
+    call s:call_handler(l:protocol, 'read', l:path)
+  elseif a:action ==# 'write'
+    call s:call_handler(l:protocol, 'write', l:path)
+  endif
 endfunction

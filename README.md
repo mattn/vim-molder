@@ -29,6 +29,23 @@ Plug 'mattn/vim-molder'
 Plug 'mattn/vim-molder-operations'
 ```
 
+## Custom Handlers
+
+You can add custom protocol handlers by implementing `molder#handler#<name>#init(path)` function. The handler should return the local path if it handles the protocol, or empty string otherwise.
+
+Example for ssh:// protocol:
+
+```vim
+function! molder#handler#ssh#init(path) abort
+  if a:path !~# '^ssh://'
+    return ''
+  endif
+  " Parse ssh:// URL and return local mount point
+  " return '/tmp/sshfs/user@host/path'
+  return {'dir': '/path/to', 'files': ['file1', 'file2']}
+endfunction
+```
+
 ## Options
 
 * Show dotfiles and dotdirs:

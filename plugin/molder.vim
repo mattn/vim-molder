@@ -17,6 +17,8 @@ augroup _molder_
   autocmd VimEnter * call s:shutup_netrw()
   autocmd BufEnter * call molder#init()
   autocmd DirChanged * call molder#chdir()
+  autocmd BufReadCmd *://* call molder#handle_protocol('read')
+  autocmd BufWriteCmd *://* call molder#handle_protocol('write')
 augroup END
 
 runtime! autoload/molder/extension/*.vim
