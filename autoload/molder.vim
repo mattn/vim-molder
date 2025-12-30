@@ -105,6 +105,11 @@ function! s:call_handler(protocol, method, ...) abort
   return 0
 endfunction
 
+" Check if current buffer is a local file (not handled by protocol handler)
+function! molder#is_local() abort
+  return !exists('b:molder_protocol_handled') && get(b:, 'molder_dir', '') !~# '^\w\+://'
+endfunction
+
 function! molder#chdir() abort
   if get(b:, 'molder_dir', '') ==# ''
     return
