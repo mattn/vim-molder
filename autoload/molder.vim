@@ -145,8 +145,9 @@ function! molder#init() abort
         let l:path = l:result
       endif
     endif
+  else
+    let l:path = resolve(l:path)
   endif
-  let l:path = resolve(l:path)
 
   if !l:handled
     if !isdirectory(l:path)
@@ -188,9 +189,9 @@ function! molder#init() abort
 endfunction
 
 function! molder#open() abort
-  let l:filename = substitute(getline('.'), '/$', '', '')
+  let l:filename = getline('.')
   let l:fullpath = b:molder_dir .. l:filename
-  let l:is_dir = getline('.') =~# '/$'
+  let l:is_dir = l:filename =~# '/$'
 
   " Check if handler exists for this protocol
   let l:protocol = matchstr(b:molder_dir, '^\zs\w\+\ze://')
